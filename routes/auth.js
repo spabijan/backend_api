@@ -1,19 +1,19 @@
 const express = require('express');
-const User = require('../models/user.js');
+const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const authRouter = express.Router();
 const jwt = require('jsonwebtoken');
 
 authRouter.post('/api/signup', async (req, res) => {
     try {
-        const {name, email, password} = req.body;
+        const {fullName, email, password} = req.body;
         const existingEmail = await User.findOne({email})
         if (existingEmail) {
             return res.status(400).json({msg: "Email already exists"})
         } else {
             const salt = await bcrypt.genSalt(10);
             const hash = await bcrypt.hash(password, salt);
-            let user = new User({name, email, password: hash});
+            let user = new User({fullName, email, password: hash});
             user = await user.save()
             res.json({user})
         }
