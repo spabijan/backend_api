@@ -4,7 +4,6 @@ const Banner = require("../models/banner");
 
 const categoryRouter = express.Router();
 
-
 categoryRouter.post("/api/categories", async (req, res) => {
     try {
         const {name, image, banner} = req.body;

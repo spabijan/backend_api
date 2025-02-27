@@ -10,7 +10,7 @@ productReviewRouter.post("/api/product-review", async (req, res) => {
         await newReview.save()
         res.status(201).json(newReview)
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send({error: err.message});
     }
 })
 
@@ -20,10 +20,10 @@ productReviewRouter.get("/api/product-review", async (req, res) => {
         if (reviews.length > 0) {
             res.status(200).json(reviews)
         } else {
-            res.status(404).send('Not Found')
+            res.status(404).send({msg: 'Not Found'})
         }
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send({error: err.message});
     }
 })
 module.exports = productReviewRouter;

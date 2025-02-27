@@ -27,7 +27,7 @@ async function findWithFilter(filter, res) {
         if (popular.length > 0) {
             res.status(200).send(popular)
         } else {
-            res.status(404).send({error: "Not Found"})
+            res.status(404).send({msg: "Not Found"})
         }
     } catch (e) {
         res.status(500).json({error: e.message})

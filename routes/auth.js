@@ -36,7 +36,7 @@ authRouter.post('/api/signIn', async (req, res) => {
                 const token = jwt.sign({id: user._id}, "passwordKey")
 
                 const {password, ...userWithoutPassword} = user._doc
-                res.status(200).json({token, ...userWithoutPassword})
+                res.status(200).json({token, user: userWithoutPassword})
             }
         }
     } catch (e) {
