@@ -19,6 +19,10 @@ const productsSchema = mongoose.Schema({
         type: Boolean, default: false
     }, recommend: {
         type: Boolean, default: false
+    }, vendorId: {
+        type: String, required: true
+    }, fullName: {
+        type: String, required: true
     }
 })
 
