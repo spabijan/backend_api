@@ -7,6 +7,7 @@ const subCategoryRouter = require('./routes/sub_category');
 const productRouter = require('./routes/product');
 const productReviewRouter = require('./routes/product_review');
 const vendorRouter = require('./routes/vendors');
+const orderRouter = require('./routes/order');
 const SERVER_LISTEN_PORT = 3000;
 const cors = require('cors');
 
@@ -22,7 +23,7 @@ app.use(subCategoryRouter)
 app.use(productRouter)
 app.use(productReviewRouter)
 app.use(vendorRouter)
-
+app.use(orderRouter)
 
 mongoose.connect(DB).then(() => {
     console.log('MongoDB Connected');

@@ -4,6 +4,21 @@ const bcrypt = require('bcryptjs');
 const authRouter = express.Router();
 const jwt = require('jsonwebtoken');
 
+authRouter.put('/api/users/:id', async (req, res) => {
+    try {
+        const {id} = req.params;
+        const {state, city, locality} = req.body;
+        const user = await User.findByIdAndUpdate(id, {state, city, locality}, {new: true});
+
+        if (!user) {
+            return res.status(400).json({msg: "User not found"})
+        }
+        return res.status(200).json({user})
+    } catch (e) {
+        res.status(500).json({error: e})
+    }
+})
+
 authRouter.post('/api/signup', async (req, res) => {
     try {
         const {fullName, email, password} = req.body;
@@ -43,5 +58,6 @@ authRouter.post('/api/signIn', async (req, res) => {
         res.status(500).json({error: e})
     }
 })
+
 
 module.exports = authRouter
