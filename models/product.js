@@ -23,6 +23,10 @@ const productsSchema = mongoose.Schema({
         type: String, required: true
     }, fullName: {
         type: String, required: true
+    }, averageRating: {
+        type: Number, default: 0
+    }, totalRating: {
+        type: Number, default: 0
     }
 })
 
