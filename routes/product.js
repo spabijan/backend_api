@@ -71,9 +71,9 @@ router.get('/api/top-rated-products', async (req, res) => {
     try {
         const topRated = await Product.find({}).sort({averageRating: -1}).limit(10)    // '-1' means descending sort
         if (!topRated || topRated.length === 0) {
-            return req.status(204).send()
+            return res.status(204).send()
         } else {
-            return req.status(200).send(topRated)
+            return res.status(200).send(topRated)
         }
     } catch (e) {
         res.status(500).json({error: e.message})
