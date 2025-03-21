@@ -45,4 +45,39 @@ async function findWithFilter(filter, res) {
     }
 }
 
+router.get("/api/related-products/:productId", async (req, res) => {
+    try {
+        const {productId} = req.params;
+        const product = await Product.findById(productId, {})
+        if (!product) {
+            res.status(404).send({msg: "Not Found"})
+        } else {
+            let relatedProducts = await Product.find({
+                subcategory: product.subcategory,
+                _id: {$ne: productId},
+            });
+            if (!relatedProducts || relatedProducts.length === 0) {
+                res.status(204).send()
+            } else {
+                res.status(200).send(relatedProducts)
+            }
+        }
+    } catch (e) {
+        res.status(500).json({error: e.message})
+    }
+})
+
+router.get('/api/top-rated-products', async (req, res) => {
+    try {
+        const topRated = await Product.find({}).sort({averageRating: -1}).limit(10)    // '-1' means descending sort
+        if (!topRated || topRated.length === 0) {
+            return req.status(204).send()
+        } else {
+            return req.status(200).send(topRated)
+        }
+    } catch (e) {
+        res.status(500).json({error: e.message})
+    }
+})
+
 module.exports = router;
