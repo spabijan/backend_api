@@ -2,6 +2,8 @@ const Product = require("../models/product");
 const express = require("express");
 const router = express.Router();
 const {auth, vendorAuth} = require("../middleware/auth");
+const res = require("express/lib/response");
+const req = require("express/lib/request");
 
 router.post("/api/add-product", auth, vendorAuth, async (req, res) => {
     try {
@@ -85,9 +87,9 @@ router.get('api/product/subcategory/:subcategoryId', async (req, res) => {
         const {subcategoryId} = req.params;
         const products = await Product.find({subcategory: subcategoryId})
         if (!products || products.length === 0) {
-           return res.status(204).send([])
+            return res.status(204).send([])
         } else {
-           return res.status(200).send(products)
+            return res.status(200).send(products)
         }
     } catch (e) {
         res.status(500).json({error: e.message})
@@ -98,7 +100,7 @@ router.get('/api/search-product', async (req, res) => {
     try {
         const {query} = req.query;
         if (!query) {
-           return  res.status(400).json({msg: "Query parameter missing"})
+            return res.status(400).json({msg: "Query parameter missing"})
         }
         const products = await Product.find({
             $or: [
@@ -107,10 +109,29 @@ router.get('/api/search-product', async (req, res) => {
             ]
         })
         if (!products || products.length === 0) {
-           return  res.status(204).send([])
+            return res.status(204).send([])
         } else {
             return res.status(200).send(products)
         }
+    } catch (e) {
+        res.status(500).json({error: e.message})
+    }
+})
+
+router.put('/api/edit-product/:productId', auth, vendorAuth, async (req, res) => {
+    try {
+        const {productId} = req.params;
+        const product = await Product.findById(productId)
+        if (!product) {
+            return res.status(404).send({msg: "Product not found"})
+        }
+        if (product.vendorId.toString() !== req.user.id.toString()) {
+            return res.status(403).send({msg: "Unauthorized"})
+        }
+        const {vendorId, ...updateData} = req.body;
+        const updated = await product.findByIdAndUpdate(productId, {$set: updateData}, {new: true})
+
+        res.status(200).send(updated)
     } catch (e) {
         res.status(500).json({error: e.message})
     }
