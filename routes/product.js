@@ -82,7 +82,7 @@ router.get('/api/top-rated-products', async (req, res) => {
     }
 })
 
-router.get('api/product/subcategory/:subcategoryId', async (req, res) => {
+router.get('/api/product/subcategory/:subcategoryId', async (req, res) => {
     try {
         const {subcategoryId} = req.params;
         const products = await Product.find({subcategory: subcategoryId})
