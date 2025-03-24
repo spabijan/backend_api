@@ -31,7 +31,7 @@ subCategoryRouter.get("/api/category/:categoryName/subcategories", async (req, r
         const {categoryName} = req.params;
         const subcategories = await SubCategory.find({categoryName: categoryName});
         if (!subcategories || subcategories.length === 0) {
-            res.status(404).send({msg: "SubCategory not found"});
+            res.status(204).send([]);
         } else {
             res.status(200).send(subcategories)
         }
