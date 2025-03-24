@@ -8,7 +8,7 @@ const productRouter = require('./routes/product');
 const productReviewRouter = require('./routes/product_review');
 const vendorRouter = require('./routes/vendors');
 const orderRouter = require('./routes/order');
-const SERVER_LISTEN_PORT = 3000;
+const SERVER_LISTEN_PORT = process.env.PORT || 3000;
 const cors = require('cors');
 
 const app = express();
