@@ -19,7 +19,10 @@ orderRouter.post("/api/orders", auth, async (req, res) => {
             vendorId,
             city,
             state,
-            locality
+            locality,
+            paymentStatus,
+            paymentIntent,
+            paymentMethod
         } = req.body;
 
         const order = new Order({
@@ -34,7 +37,10 @@ orderRouter.post("/api/orders", auth, async (req, res) => {
             vendorId,
             city,
             state,
-            locality
+            locality,
+            paymentStatus,
+            paymentIntent,
+            paymentMethod
         })
 
         await order.save();
@@ -130,6 +136,15 @@ orderRouter.post("/api/payment-intent", auth, async (req, res) => {
             amount, currency
         })
         return res.status(201).json(paymentIntent);
+    } catch (e) {
+        res.status(500).json({error: e.message})
+    }
+})
+
+orderRouter.get("/api/payment-intent/:id", auth, async (req, res) => {
+    try {
+        const paymentIntent = await stripe.paymentIntents.retrieve(req.params.id);
+        return res.status(200).json(paymentIntent);
     } catch (e) {
         res.status(500).json({error: e.message})
     }
