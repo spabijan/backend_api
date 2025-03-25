@@ -123,7 +123,7 @@ orderRouter.get("/api/orders", async (req, res) => {
 })
 
 // simple payment api for development
-orderRouter.post("/api/payment-intent", async (req, res) => {
+orderRouter.post("/api/payment-intent", auth, async (req, res) => {
     try {
         const {amount, currency} = req.body;
         const paymentIntent = await stripe.paymentIntents.create({
