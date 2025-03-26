@@ -5,6 +5,7 @@ const authRouter = express.Router();
 const jwt = require('jsonwebtoken');
 const sendOtpEmail = require('../helper/send_emails');
 const crypto = require('crypto');
+const {auth} = require('../middleware/auth');
 
 const otpStore = new Map();
 authRouter.put('/api/users/:id', async (req, res) => {
@@ -104,6 +105,20 @@ authRouter.get('/api/users', async (req, res) => {
         const users = await User.find().select('-password')
         return res.status(200).json(users)
     } catch (e) {
+        res.status(500).json({error: e})
+    }
+})
+
+authRouter.delete('/api/users/:id', auth,  async (req, res) => {
+    try {
+    const {id} = req.params;
+    let userToDelete = await User.findById(id)
+        if (!userToDelete) {
+            return res.status(400).json({msg: "User not found"})
+        }
+        User.findByIdAndDelete(id)
+        return res.status(200).json({msg: "User deleted successfully"})
+    }catch (e) {
         res.status(500).json({error: e})
     }
 })

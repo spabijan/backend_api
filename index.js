@@ -8,6 +8,7 @@ const productRouter = require('./routes/product');
 const productReviewRouter = require('./routes/product_review');
 const vendorRouter = require('./routes/vendors');
 const orderRouter = require('./routes/order');
+const deprecated = require('./routes/deprecated');
 require('dotenv').config();
 const SERVER_LISTEN_PORT = process.env.PORT || 3000;
 const cors = require('cors');
@@ -24,6 +25,7 @@ app.use(productRouter)
 app.use(productReviewRouter)
 app.use(vendorRouter)
 app.use(orderRouter)
+app.use(deprecated)
 
 mongoose.connect(process.env.DATABASE_SECRET_ACCESS_KEY).then(() => {
     console.log('MongoDB Connected');

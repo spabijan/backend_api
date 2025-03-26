@@ -13,7 +13,15 @@ const vendorSchema = new mongoose.Schema({
             }, message: "Please enter a valid email address",
         }
     },
-
+    storeName: {
+        type: String, require: true
+    },
+    storeImage: {
+        type: String, require: true
+    },
+    storeDescription: {
+        type: String, require: true
+    },
     state: {
         type: String, default: ""
     }, city: {
