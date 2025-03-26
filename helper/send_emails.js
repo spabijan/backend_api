@@ -11,17 +11,21 @@ const client = new SESClient({
 });
 
 
-const generateWelcomeEmailHTML = () => {
+const generateOtpEmail = (otp) => {
     return `
     <html lang="en">
         <body>
             <h1>Welcome to ${process.env.APP_NAME}</h1>
+            <p>Your One-Time password for email verification is: </p>
+            <p>${otp}</p>
+            <p>please endter this TOP to verify your email address. This code is valid for the next 10 minutes</p>
+            <p>if you did not request this, please ignore this email</p>
         </body>
     </html>
     `
 }
 
-const sendWelcomeEmail = async (email) => {
+const sendOtpEmail = async (email, otp) => {
     const params = {
         Source: process.env.EMAIL_FROM,
         ReplyToAddress: [process.env.EMAIL_TO],
@@ -32,12 +36,12 @@ const sendWelcomeEmail = async (email) => {
             Body: {
                 Html: {
                     Charset: 'utf-8',
-                    Data: generateWelcomeEmailHTML(),
+                    Data: generateOtpEmail(otp),
                 }
             },
             Subject: {
                 Charset: 'utf-8',
-                Data: `Welcome to ${process.env.APP_NAME}`,
+                Data: `Kitku-store email verification`,
             }
         }
     }
@@ -51,4 +55,4 @@ const sendWelcomeEmail = async (email) => {
     }
 }
 
-module.exports = sendWelcomeEmail;
+module.exports = sendOtpEmail;

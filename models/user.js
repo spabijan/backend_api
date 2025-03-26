@@ -20,8 +20,9 @@ const userSchema = new mongoose.Schema({
         type: String, default: ""
     }, locality: {
         type: String, default: ""
+    }, isVerified: {
+        type: Boolean, default: false
     },
-
     password: {
         type: String, require: true, validate: {
             validator: (value) => {
