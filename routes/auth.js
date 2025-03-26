@@ -3,6 +3,7 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const authRouter = express.Router();
 const jwt = require('jsonwebtoken');
+const sendWelcomeEmail = require('../helper/send_emails');
 
 authRouter.put('/api/users/:id', async (req, res) => {
     try {
@@ -31,6 +32,7 @@ authRouter.post('/api/signup', async (req, res) => {
             let user = new User({fullName, email, password: hash});
             user = await user.save()
             res.json({user})
+            sendWelcomeEmail(email)
         }
     } catch (error) {
         res.status(500).json({error: error.message})

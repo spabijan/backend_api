@@ -8,11 +8,11 @@ const productRouter = require('./routes/product');
 const productReviewRouter = require('./routes/product_review');
 const vendorRouter = require('./routes/vendors');
 const orderRouter = require('./routes/order');
+require('dotenv').config();
 const SERVER_LISTEN_PORT = process.env.PORT || 3000;
 const cors = require('cors');
 
 const app = express();
-const DB = "mongodb+srv://rezyser55:doTzBHH07FOlTBqz@cluster0.5woi5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 app.use(express.json());
 app.use(cors())
@@ -25,7 +25,7 @@ app.use(productReviewRouter)
 app.use(vendorRouter)
 app.use(orderRouter)
 
-mongoose.connect(DB).then(() => {
+mongoose.connect(process.env.DATABASE_SECRET_ACCESS_KEY).then(() => {
     console.log('MongoDB Connected');
 });
 
