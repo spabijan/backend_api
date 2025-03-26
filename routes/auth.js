@@ -47,6 +47,26 @@ authRouter.post('/api/signup', async (req, res) => {
     }
 })
 
+authRouter.post('/api/token-validation', async (req, res) => {
+    try {
+        const token = req.header('x-auth-token');
+        if (!token) {
+            return res.json(false)
+        }
+        const verified = jwt.verify(token, 'passwordKey')
+        if (!verified) {
+            return res.json(false)
+        }
+        const user = await User.findById(verified.id);
+        if (!user) {
+            return res.json(false)
+        }
+        return res.json(true)
+    } catch (error) {
+        return res.json(false)
+    }
+})
+
 authRouter.post('/api/signIn', async (req, res) => {
     try {
         const {email, password} = req.body;
@@ -61,7 +81,8 @@ authRouter.post('/api/signIn', async (req, res) => {
             if (!isMatch) {
                 return res.status(400).json({msg: "Password not match"})
             } else {
-                const token = jwt.sign({id: user._id}, "passwordKey")
+                // TODO: change token expiry to 1h
+                const token = jwt.sign({id: user._id}, "passwordKey", {expiresIn: "1m"});
 
                 const {password, ...userWithoutPassword} = user._doc
                 res.status(200).json({token, user: userWithoutPassword})
@@ -109,17 +130,26 @@ authRouter.get('/api/users', async (req, res) => {
     }
 })
 
-authRouter.delete('/api/users/:id', auth,  async (req, res) => {
+authRouter.delete('/api/users/:id', auth, async (req, res) => {
     try {
-    const {id} = req.params;
-    let userToDelete = await User.findById(id)
+        const {id} = req.params;
+        let userToDelete = await User.findById(id)
         if (!userToDelete) {
             return res.status(400).json({msg: "User not found"})
         }
         User.findByIdAndDelete(id)
         return res.status(200).json({msg: "User deleted successfully"})
-    }catch (e) {
+    } catch (e) {
         res.status(500).json({error: e})
+    }
+})
+
+authRouter.get('/', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user)
+        return res.json({...user._doc, token: req.token})
+    } catch (e) {
+        return res.status(500).json({error: e})
     }
 })
 
