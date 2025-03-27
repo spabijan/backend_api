@@ -2,8 +2,8 @@ const Product = require("../models/product");
 const express = require("express");
 const router = express.Router();
 const {auth, vendorAuth} = require("../middleware/auth");
-const res = require("express/lib/response");
-const req = require("express/lib/request");
+
+const  Vendor = require("../models/vendors");
 
 router.post("/api/add-product", auth, vendorAuth, async (req, res) => {
     try {
@@ -136,5 +136,19 @@ router.put('/api/edit-product/:productId', auth, vendorAuth, async (req, res) =>
         res.status(500).json({error: e.message})
     }
 })
+
+router.get('/api/product/vendor/:vendorId', auth, vendorAuth, async (req, res) => {
+    try {
+        const {vendorId} = req.params;
+        const vendor = await Vendor.findById(vendorId)
+        if (!vendor) {
+            return res.status(404).send({msg: "Vendor not found"})
+        }
+        return await findWithFilter({vendorId: vendorId}, res)
+    } catch (e) {
+        res.status(500).json({error: e.message})
+    }
+})
+
 
 module.exports = router;
