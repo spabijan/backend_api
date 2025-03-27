@@ -35,8 +35,7 @@ vendorRouter.post('/api/vendor/signIn', async (req, res) => {
             if (!isMatch) {
                 return res.status(400).json({msg: "Password not match"})
             } else {
-                const token = jwt.sign({id: vendor._id}, "passwordKey")
-
+                const token = jwt.sign({id: vendor._id}, "passwordKey", {expiresIn: "1h"});
                 const {password, ...vendorWithoutPassword} = vendor._doc
                 res.status(200).json({token, vendor: vendorWithoutPassword})
             }
@@ -67,6 +66,36 @@ vendorRouter.delete('/api/vendors/:id', auth, vendorAuth, async (req, res) => {
         return res.status(200).json({msg: "Vendor deleted"})
     }catch (e) {
         res.status(500).json({error: e})
+    }
+})
+
+vendorRouter.post('/api/vendors/token-validation', async (req, res) => {
+    try {
+        const token = req.header('x-auth-token');
+        if (!token) {
+            return res.json(false)
+        }
+        const verified = jwt.verify(token, 'passwordKey')
+        if (!verified) {
+            return res.json(false)
+        }
+        const user = await Vendor.findById(verified.id);
+        if (!user) {
+            return res.json(false)
+        }
+        return res.json(true)
+    } catch (error) {
+        return res.json(false)
+    }
+})
+
+vendorRouter.get('/vendor/', auth, vendorAuth, async (req, res) => {
+    try {
+        const vendor = await Vendor.findById(req.user) // do not confuse. 'user' is request field!!!
+        const {password, ...vendorWithoutPassword} = vendor._doc
+        return res.json({vendor: vendorWithoutPassword, token: req.token})
+    } catch (e) {
+        return res.status(500).json({error: e})
     }
 })
 

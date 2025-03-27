@@ -14,13 +14,13 @@ const vendorSchema = new mongoose.Schema({
         }
     },
     storeName: {
-        type: String, require: true
+        type: String, default: ""
     },
     storeImage: {
-        type: String, require: true
+        type: String, default: ""
     },
     storeDescription: {
-        type: String, require: true
+        type: String, default: ""
     },
     state: {
         type: String, default: ""

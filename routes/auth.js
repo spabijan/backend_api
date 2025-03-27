@@ -17,7 +17,8 @@ authRouter.put('/api/users/:id', async (req, res) => {
         if (!user) {
             return res.status(400).json({msg: "User not found"})
         }
-        return res.status(200).json({user})
+        const {password, ...userWithoutPassword} = user._doc
+        return res.status(200).json({user: userWithoutPassword})
     } catch (e) {
         res.status(500).json({error: e})
     }
@@ -81,8 +82,7 @@ authRouter.post('/api/signIn', async (req, res) => {
             if (!isMatch) {
                 return res.status(400).json({msg: "Password not match"})
             } else {
-                // TODO: change token expiry to 1h
-                const token = jwt.sign({id: user._id}, "passwordKey", {expiresIn: "1m"});
+                const token = jwt.sign({id: user._id}, "passwordKey", {expiresIn: "1h"});
 
                 const {password, ...userWithoutPassword} = user._doc
                 res.status(200).json({token, user: userWithoutPassword})
@@ -147,7 +147,8 @@ authRouter.delete('/api/users/:id', auth, async (req, res) => {
 authRouter.get('/', auth, async (req, res) => {
     try {
         const user = await User.findById(req.user)
-        return res.json({...user._doc, token: req.token})
+        const {password, ...userWithoutPassword} = user._doc
+        return res.json({user: userWithoutPassword, token: req.token})
     } catch (e) {
         return res.status(500).json({error: e})
     }
