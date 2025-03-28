@@ -129,7 +129,7 @@ router.put('/api/edit-product/:productId', auth, vendorAuth, async (req, res) =>
             return res.status(403).send({msg: "Unauthorized"})
         }
         const {vendorId, ...updateData} = req.body;
-        const updated = await product.findByIdAndUpdate(productId, {$set: updateData}, {new: true})
+        const updated = await Product.findByIdAndUpdate(productId, {$set: updateData}, {new: true})
 
         res.status(200).send(updated)
     } catch (e) {
@@ -137,7 +137,7 @@ router.put('/api/edit-product/:productId', auth, vendorAuth, async (req, res) =>
     }
 })
 
-router.get('/api/product/vendor/:vendorId', auth, vendorAuth, async (req, res) => {
+router.get('/api/product/vendor/:vendorId', auth, async (req, res) => {
     try {
         const {vendorId} = req.params;
         const vendor = await Vendor.findById(vendorId)

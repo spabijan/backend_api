@@ -99,4 +99,29 @@ vendorRouter.get('/vendor/', auth, vendorAuth, async (req, res) => {
     }
 })
 
+vendorRouter.get('/api/vendors', async (req, res) => {
+    try {
+        const users = await Vendor.find().select('-password')
+        return res.status(200).json(users)
+    } catch (e) {
+        res.status(500).json({error: e})
+    }
+})
+
+vendorRouter.put('/api/vendor/:id', async (req, res) => {
+    try {
+        const {id} = req.params;
+        const {storeImage, storeDescription} = req.body;
+        const vendor = await Vendor.findByIdAndUpdate(id, {storeImage, storeDescription},  {new: true});
+
+        if (!vendor) {
+            return res.status(400).json({msg: "User not found"})
+        }
+        const {password, ...vendorWithoutPassword} = vendor._doc
+        return res.status(200).json({user: vendorWithoutPassword})
+    } catch (e) {
+        res.status(500).json({error: e})
+    }
+})
+
 module.exports = vendorRouter
